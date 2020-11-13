@@ -11,7 +11,8 @@ if VERSION >= v"1.2.0-DEV.573"
     include("snoopi.jl")
 end
 
-if VERSION >= v"1.6.0-DEV.1190"  # https://github.com/JuliaLang/julia/pull/37749
+# https://github.com/JuliaLang/julia/pull/37749
+if isdefined(Core.Compiler, :Timings)
     include("snoopi_deep.jl")
 end
 
