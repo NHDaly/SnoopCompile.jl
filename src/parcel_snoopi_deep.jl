@@ -45,6 +45,10 @@ function build_inclusive_times(t::Timing)
     return InclusiveTiming(t.mi_info, incl_time, t.start_time, child_times)
 end
 
+# HACK: Backport `sum(...;init)` from julia 1.6 to julia 1.5
+Base.sum(f::typeof(SnoopCompile.inclusive_time), a::Array{SnoopCompile.InclusiveTiming,1}; init=0x0) =
+    sum([(f.(a))..., init])
+
 @enum FrameDisplayType slottypes method_instance method function_name
 
 """
@@ -158,7 +162,7 @@ function frame_name_slottypes(slottypes)
     name = slottypes[1].val
     try
         return "$(repr(name))(" *
-        join((if t isa Core.Const "$t::$(typeof(t.val))" else "::$t" end
+        join((if t isa Core.Compiler.Const "$t::$(typeof(t.val))" else "::$t" end
             for t in slottypes[2:end]),
             ", "
         ) *
